@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Future identity-bound event envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "event_id", "user_id", "type",
+    "entity_id", "occurred_at", "expected_version", "payload"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "event_id": { "type": "string", "pattern": "^[0-9a-f-]{36}$" },
+    "user_id": { "type": "string", "pattern": "^[0-9a-f-]{36}$" },
+    "type": { "type": "string", "minLength": 1 },
+    "entity_id": { "type": "string", "pattern": "^[0-9a-f-]{36}$" },
+    "occurred_at": { "type": "string", "minLength": 20 },
+    "expected_version": { "type": "integer", "minimum": 0 },
+    "payload": { "type": "object" }
+  }
+}

@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:17.6-bookworm
+    environment:
+      POSTGRES_USER: questify
+      POSTGRES_PASSWORD: local-only
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U questify"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+  app:
+    build:
+      context: .
+      target: test-tools
+    working_dir: /app
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+    volumes:
+      - .:/app
+      - bundle:/bundle
+      - node_modules:/app/frontend/node_modules
+      - /tmp/opencode:/tmp/opencode
+    environment:
+      HOME: /bundle/home
+      BUNDLE_APP_CONFIG: /bundle/config
+      DATABASE_URL: postgres://questify:local-only@db/questify_development
+      TEST_DATABASE_URL: postgres://questify:local-only@db/questify_test
+      QUEUE_DATABASE_URL: postgres://questify:local-only@db/questify_development_queue
+      TEST_QUEUE_DATABASE_URL: postgres://questify:local-only@db/questify_test_queue
+      SECRET_KEY_BASE: local-foundation-not-for-production-6f74d9ac82e3d1
+      RAILS_ENV: development
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  pgdata:
+  bundle:
+  node_modules:

@@ -1,0 +1,15 @@
+#!/bin/sh
+set -eu
+case "${1:-all}" in
+  R) bin/rails test ;;
+  F) npm --prefix frontend run test -- --run ;;
+  B) npm --prefix frontend run build ;;
+  E) npm --prefix frontend run test:e2e ;;
+  all)
+    bin/rails test
+    npm --prefix frontend run test -- --run
+    npm --prefix frontend run build
+    npm --prefix frontend run test:e2e
+    ;;
+  *) printf '%s\n' "Use R, F, B, E, or all" >&2; exit 2 ;;
+esac

@@ -1,0 +1,14 @@
+/.bundle/
+/vendor/bundle/
+/frontend/node_modules/
+/frontend/playwright-report/
+/frontend/test-results/
+/public/app/
+/public/service-worker.js
+/log/*
+!/log/.keep
+/tmp/*
+!/tmp/.keep
+/.env
+/.env.*
+/config/master.key

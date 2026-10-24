@@ -1,0 +1,14 @@
+.git
+local
+node_modules
+frontend/node_modules
+.bundle
+vendor/bundle
+log/*
+tmp/*
+.env
+.env.*
+config/master.key
+config/credentials*
+frontend/playwright-report
+frontend/test-results

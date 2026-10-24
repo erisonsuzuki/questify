@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+require "fileutils"
+require "pathname"
+
+source = Pathname.new(ARGV.fetch(0)).realpath
+root = Pathname.new(__dir__).parent.realpath
+raise "staging must be under /tmp/opencode" unless
+  source.to_s.start_with?("/tmp/opencode/questify-scaffold.")
+
+files = %w[
+  Rakefile config.ru
+  bin/rails bin/rake bin/setup
+  config/boot.rb config/environment.rb config/application.rb
+  config/environments/development.rb config/environments/production.rb
+  config/environments/test.rb config/puma.rb
+  config/initializers/filter_parameter_logging.rb
+  config/initializers/inflections.rb config/locales/en.yml
+  app/models/application_record.rb app/jobs/application_job.rb
+  app/mailers/application_mailer.rb app/helpers/application_helper.rb
+  app/views/layouts/mailer.html.erb app/views/layouts/mailer.text.erb
+  test/test_helper.rb db/seeds.rb
+  public/400.html public/404.html public/406-unsupported-browser.html
+  public/422.html public/500.html
+  tmp/.keep log/.keep vendor/.keep
+]
+files.each do |relative|
+  src = source.join(relative)
+  dst = root.join(relative)
+  raise "missing generated file: #{relative}" unless src.file?
+  raise "refusing overwrite: #{relative}" if dst.exist?
+end
+files.each do |relative|
+  dst = root.join(relative)
+  FileUtils.mkdir_p(dst.dirname)
+  FileUtils.cp(source.join(relative), dst, preserve: true)
+end
